@@ -51,7 +51,7 @@ function init(context: types.IExtensionContext) {
     if (instructions.find(inst => inst.destination === 'enbseries.ini') !== undefined) {
       if (instructions.find(inst => inst.destination === 'd3d11.dll') !== undefined) {
         remote.dialog.showMessageBox(
-            null,
+            remote.getCurrentWindow(),
             {
               message: context.api.translate(
                   'The mod you\'re about to install contains dll files that will run with the ' +
