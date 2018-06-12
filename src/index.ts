@@ -46,6 +46,7 @@ function init(context: types.IExtensionContext) {
     return discovery.path;
   };
 
+  /*
   const testEnb = (instructions: types.IInstruction[]) =>
       new Promise<boolean>((resolve, reject) => {
     if (instructions.find(inst => inst.destination === 'enbseries.ini') !== undefined) {
@@ -76,8 +77,9 @@ function init(context: types.IExtensionContext) {
       resolve(false);
     }
   });
+  */
 
-  context.registerModType('enb', 100, () => true, getPath, testEnb);
+  context.registerModType('enb', 100, () => true, getPath, () => Promise.resolve(false));
   context.registerInstaller('enb', 50, testSupported, install);
 
   return true;
