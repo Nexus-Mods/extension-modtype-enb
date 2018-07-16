@@ -13,10 +13,11 @@ function testSupported(files: string[]): Promise<types.ISupportedResult> {
 }
 
 function makeCopy(basePath: string, filePath: string): types.IInstruction {
+  const len = basePath !== '.' ? basePath.length + 1 : 0
   return {
     type: 'copy',
     source: filePath,
-    destination: filePath.substring(basePath.length + 1),
+    destination: filePath.substring(0),
   };
 }
 
@@ -33,7 +34,9 @@ function install(files: string[],
   const basePath = path.dirname(refFile);
 
   const instructions: types.IInstruction[] = files
-      .filter(filePath => !filePath.endsWith(path.sep) && filePath.startsWith(basePath + path.sep))
+      .filter(filePath =>
+          !filePath.endsWith(path.sep)
+          && !path.relative(basePath, path.dirname(filePath)).startsWith('..'))
           .map(filePath => makeCopy(basePath, filePath));
 
   return Promise.resolve({ instructions });
@@ -46,7 +49,6 @@ function init(context: types.IExtensionContext) {
     return discovery.path;
   };
 
-  /*
   const testEnb = (instructions: types.IInstruction[]) =>
       new Promise<boolean>((resolve, reject) => {
     if (instructions.find(inst => inst.destination === 'enbseries.ini') !== undefined) {
@@ -77,10 +79,9 @@ function init(context: types.IExtensionContext) {
       resolve(false);
     }
   });
-  */
 
   context.registerModType('enb', 100, () => true, getPath, () => Promise.resolve(false));
-  context.registerInstaller('enb', 50, testSupported, install);
+  // context.registerInstaller('enb', 50, testSupported, install);
 
   return true;
 }
