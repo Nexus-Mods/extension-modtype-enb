@@ -1,3 +1,3 @@
-let webpack = require('vortex-api').webpack.default;
+let webpack = require('vortex-api/bin/webpack').default;
 
-module.exports = webpack('modtype-enb', __dirname);
+module.exports = webpack('modtype-enb', __dirname, 4);
