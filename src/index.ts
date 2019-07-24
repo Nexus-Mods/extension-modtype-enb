@@ -80,7 +80,8 @@ function init(context: types.IExtensionContext) {
     }
   });
 
-  context.registerModType('enb', 100, () => true, getPath, () => Promise.resolve(false));
+  context.registerModType('enb', 100, gameId => gameId !== 'factorio',
+                          getPath, () => Promise.resolve(false));
   // context.registerInstaller('enb', 50, testSupported, install);
 
   return true;
