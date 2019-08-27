@@ -13,7 +13,7 @@ function testSupported(files: string[]): Promise<types.ISupportedResult> {
 }
 
 function makeCopy(basePath: string, filePath: string): types.IInstruction {
-  const len = basePath !== '.' ? basePath.length + 1 : 0
+  const len = basePath !== '.' ? basePath.length + 1 : 0;
   return {
     type: 'copy',
     source: filePath,
@@ -54,7 +54,7 @@ function init(context: types.IExtensionContext) {
     if (instructions.find(inst => inst.destination === 'enbseries.ini') !== undefined) {
       if (instructions.find(inst => inst.destination === 'd3d11.dll') !== undefined) {
         remote.dialog.showMessageBox(
-            remote.getCurrentWindow(),
+            (util as any).getVisibleWindow(),
             {
               message: context.api.translate(
                   'The mod you\'re about to install contains dll files that will run with the ' +
