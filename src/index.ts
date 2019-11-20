@@ -49,11 +49,10 @@ function init(context: types.IExtensionContext) {
     return discovery.path;
   };
 
-  const testEnb = (instructions: types.IInstruction[]) =>
-      new Promise<boolean>((resolve, reject) => {
+  const testEnb = (instructions: types.IInstruction[]) => {
     if (instructions.find(inst => inst.destination === 'enbseries.ini') !== undefined) {
       if (instructions.find(inst => inst.destination === 'd3d11.dll') !== undefined) {
-        remote.dialog.showMessageBox(
+        return remote.dialog.showMessageBox(
             (util as any).getVisibleWindow(),
             {
               message: context.api.translate(
@@ -64,21 +63,17 @@ function init(context: types.IExtensionContext) {
                   'and if you have a virus scanner active right now.'),
               buttons: ['Cancel', 'Continue'],
               noLink: true,
-            },
-            (response: number) => {
-              if (response === 1) {
-                resolve(true);
-              } else {
-                reject(new util.UserCanceled());
-              }
-            });
+            })
+            .then(result => (result.response === 1)
+              ? Promise.resolve(true)
+              : Promise.reject(new util.UserCanceled()))
       } else {
-        resolve(true);
+        return Promise.resolve(true);
       }
     } else {
-      resolve(false);
+      return Promise.resolve(false);
     }
-  });
+  };
 
   (context.registerModType as any)('enb', 100, gameId => gameId !== 'factorio',
                                    getPath, () => Promise.resolve(false), {
