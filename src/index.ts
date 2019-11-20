@@ -1,4 +1,4 @@
-import * as Promise from 'bluebird';
+import Promise from 'bluebird';
 import { remote } from 'electron';
 import * as path from 'path';
 import { types, util } from 'vortex-api';
