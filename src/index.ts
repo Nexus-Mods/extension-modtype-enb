@@ -42,6 +42,10 @@ function install(files: string[],
   return Promise.resolve({ instructions });
 }
 
+function gameSupported(gameId: string) {
+  return !['factorio', 'microsoftflightsimulator'].includes(gameId);
+}
+
 function init(context: types.IExtensionContext) {
   const getPath = (game: types.IGame): string => {
     const state: types.IState = context.api.store.getState();
@@ -53,7 +57,7 @@ function init(context: types.IExtensionContext) {
     if (instructions.find(inst => inst.destination === 'enbseries.ini') !== undefined) {
       if (instructions.find(inst => inst.destination === 'd3d11.dll') !== undefined) {
         return remote.dialog.showMessageBox(
-            (util as any).getVisibleWindow(),
+            util.getVisibleWindow(),
             {
               message: context.api.translate(
                   'The mod you\'re about to install contains dll files that will run with the ' +
@@ -66,7 +70,7 @@ function init(context: types.IExtensionContext) {
             })
             .then(result => (result.response === 1)
               ? Promise.resolve(true)
-              : Promise.reject(new util.UserCanceled()))
+              : Promise.reject(new util.UserCanceled()));
       } else {
         return Promise.resolve(true);
       }
@@ -75,8 +79,8 @@ function init(context: types.IExtensionContext) {
     }
   };
 
-  (context.registerModType as any)('enb', 100, gameId => gameId !== 'factorio',
-                                   getPath, () => Promise.resolve(false), {
+  context.registerModType('enb', 100, gameSupported,
+                          getPath, () => Promise.resolve(false), {
     mergeMods: true,
   });
   // context.registerInstaller('enb', 50, testSupported, install);
