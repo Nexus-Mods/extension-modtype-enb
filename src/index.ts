@@ -82,6 +82,7 @@ function init(context: types.IExtensionContext) {
   context.registerModType('enb', 100, gameSupported,
                           getPath, () => Promise.resolve(false), {
     mergeMods: true,
+    name: 'ENB',
   });
   // context.registerInstaller('enb', 50, testSupported, install);
 
