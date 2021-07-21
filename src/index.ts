@@ -43,6 +43,10 @@ function install(files: string[],
 }
 
 function gameSupported(gameId: string) {
+  const game = util.getGame(gameId);
+  if (game.compatible?.deployToGameDirectory === false || game.compatible?.enb === false) {
+    return false;
+  }
   return !['factorio', 'microsoftflightsimulator'].includes(gameId);
 }
 
