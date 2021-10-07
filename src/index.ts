@@ -1,5 +1,4 @@
 import Promise from 'bluebird';
-import { remote } from 'electron';
 import * as path from 'path';
 import { types, util } from 'vortex-api';
 
@@ -60,21 +59,19 @@ function init(context: types.IExtensionContext) {
   const testEnb = (instructions: types.IInstruction[]) => {
     if (instructions.find(inst => inst.destination === 'enbseries.ini') !== undefined) {
       if (instructions.find(inst => inst.destination === 'd3d11.dll') !== undefined) {
-        return remote.dialog.showMessageBox(
-            util.getVisibleWindow(),
-            {
-              message: context.api.translate(
-                  'The mod you\'re about to install contains dll files that will run with the ' +
-                  'game, have the same access to your system and can thus cause considerable ' +
-                  'damage or infect your system with a virus if it\'s malicious.\n' +
-                  'Please install this mod only if you received it from a trustworthy source ' +
-                  'and if you have a virus scanner active right now.'),
-              buttons: ['Cancel', 'Continue'],
-              noLink: true,
-            })
-            .then(result => (result.response === 1)
-              ? Promise.resolve(true)
-              : Promise.reject(new util.UserCanceled()));
+        return context.api.showDialog('question', 'Confirm mod installation', {
+          text: 'The mod you\'re about to install contains dll files that will run with the ' +
+            'game, have the same access to your system and can thus cause considerable ' +
+            'damage or infect your system with a virus if it\'s malicious.\n' +
+            'Please install this mod only if you received it from a trustworthy source ' +
+            'and if you have a virus scanner active right now.',
+        }, [
+          { label: 'Cancel' },
+          { label: 'Continue' },
+        ])
+          .then(result => (result.action === 'Continue')
+            ? Promise.resolve(true)
+            : Promise.reject(new util.UserCanceled()));
       } else {
         return Promise.resolve(true);
       }
